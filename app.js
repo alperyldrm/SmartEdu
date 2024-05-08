@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const pageRoute = require('./routers/pageRoute');
-const courseRoute = require('./roures/courseRoute');
+const courseRoute = require('./routers/courseRoute');
 
 const app = express();
 
