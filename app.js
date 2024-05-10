@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser')
 const pageRoute = require('./routers/pageRoute');
 const courseRoute = require('./routers/courseRoute');
 
@@ -15,6 +16,8 @@ app.set('view engine', 'ejs');
 
 //MIDDLEWARE FUNCTIONS
 app.use(express.static('public'));
+app.use(bodyParser.json()) // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 //ROUTER
 app.use('/', pageRoute);
