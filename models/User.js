@@ -17,15 +17,34 @@ const UserSchema = new Schema({
     type: String,
     require: true,
   },
+  role: {
+    type: String,
+    enum: ['student', 'teacher', 'admin'],
+    default: 'student',
+  },
+  courses: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Course',
+    },
+  ],
 });
 
-UserSchema.pre('validate', function (next) {
+UserSchema.pre('save', function (next) {
   const user = this;
+  if (!user.isModified('password')) {
+    return next();
+  }
+
   bcrypt.hash(user.password, 10, (error, hash) => {
+    if (error) {
+      return next(error);
+    }
     user.password = hash;
     next();
   });
 });
+
 const User = mongoose.model('User', UserSchema);
 
 module.exports = User;

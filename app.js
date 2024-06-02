@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const flash = require('connect-flash');
+const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const pageRoute = require('./routers/pageRoute');
 const courseRoute = require('./routers/courseRoute');
@@ -11,7 +13,7 @@ const userRoute = require('./routers/userRoute');
 const app = express();
 
 //CONNECT DB
-mongoose.connect('mongodb://localhost/smartEdu-db').then(() => {
+mongoose.connect('mongodb+srv://dbUser:de.K633X@cluster0.h1hruhg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0').then(() => {
   console.log('DB connected successfully');
 });
 
@@ -33,6 +35,16 @@ app.use(
     store: MongoStore.create({ mongoUrl: 'mongodb://localhost/smartEdu-db' }),
   })
 );
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.flashMessages = req.flash();
+  next();
+});
+app.use(
+  methodOverride('_method', {
+    methods: ['POST', 'GET'],
+  })
+);
 
 //ROUTER
 app.use('*', (req, res, next) => {
@@ -44,7 +56,7 @@ app.use('/courses', courseRoute);
 app.use('/categories', categoryRoute);
 app.use('/users', userRoute);
 
-const port = 3000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
-  console.log(`App started on port: ${port}`);
+  console.log(`App started on port ${port}`);
 });
